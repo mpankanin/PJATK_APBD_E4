@@ -17,7 +17,7 @@ public class WarehouseService : IWarehouseService
         _orderRepository = orderRepository;
     }
     
-    public void AddProductWarehouse(ProductWarehouse productWarehouse)
+    public int AddProductWarehouse(ProductWarehouse productWarehouse)
     {
         //checking if product exists
         if(_productRepository.ProductExists(productWarehouse.IdProduct) == false)
@@ -50,11 +50,25 @@ public class WarehouseService : IWarehouseService
             throw new Exception("Order was realised");
         }
         
+        //count order price
+        var price = _productRepository.GetProductPrice(productWarehouse.IdProduct);
+        var totalPrice = price * productWarehouse.Amount;
         
-        
-        
-        
-        
+        //adding product to warehouse
+        var insertedId = _warehouseRepository.AddProductWarehouse(productWarehouse.IdWarehouse, 
+            productWarehouse.IdProduct, 
+            orderId, 
+            productWarehouse.Amount, 
+            totalPrice, 
+            DateTime.Now);
+
+        return insertedId;
     }
+    
+public int AddProductWarehouseSP(ProductWarehouse productWarehouse)
+{
+    return _warehouseRepository.AddProductWarehouseSP(productWarehouse.IdProduct, productWarehouse.IdWarehouse,
+        productWarehouse.Amount, productWarehouse.CreatedAt);
+}
     
 }

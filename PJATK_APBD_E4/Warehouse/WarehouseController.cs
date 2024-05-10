@@ -19,8 +19,22 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            _warehouseService.AddProductWarehouse(productWarehouse);
-            return StatusCode(StatusCodes.Status201Created);
+            var id = _warehouseService.AddProductWarehouse(productWarehouse);
+            return StatusCode(StatusCodes.Status201Created, new {id = id});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+    
+    [HttpPost("sp")]
+    public IActionResult AddWarehouseSP([FromBody] ProductWarehouse productWarehouse)
+    {
+        try
+        {
+            var id = _warehouseService.AddProductWarehouseSP(productWarehouse);
+            return StatusCode(StatusCodes.Status201Created, new {id = id});
         }
         catch (Exception e)
         {

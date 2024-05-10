@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace PJATK_APBD_E4.Warehouse;
 
@@ -13,16 +14,18 @@ public class WarehouseRepository : IWarehouseRepository
         _configuration = configuration;
     }
     
-    public void AddProductWarehouse(ProductWarehouse productWarehouse)
+    public int AddProductWarehouse(int idWarehouse, int idProduct, int idOrder, int amount, double price, DateTime createdAt)
     {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         connection.Open();
-        using var command = new SqlCommand("INSERT INTO Warehouse (IdProduct, IdWarehouse, Amount, CreatedAt) VALUES (@IdProduct, @IdWarehouse, @Amount, @CreatedAt)", connection);
-        command.Parameters.AddWithValue("@IdProduct", productWarehouse.IdProduct);
-        command.Parameters.AddWithValue("@IdWarehouse", productWarehouse.IdWarehouse);
-        command.Parameters.AddWithValue("@Amount", productWarehouse.Amount);
-        command.Parameters.AddWithValue("@CreatedAt", productWarehouse.CreatedAt);
-        command.ExecuteNonQuery();
+        using var command = new SqlCommand("INSERT INTO Product_Warehouse (IdWarehouse, IdProduct, IdOrder, Amount, Price, CreatedAt) VALUES (@IdWarehouse, @IdProduct, @IdOrder, @Amount, @Price, @CreatedAt); SELECT SCOPE_IDENTITY();", connection);
+        command.Parameters.AddWithValue("@IdWarehouse", idWarehouse);
+        command.Parameters.AddWithValue("@IdProduct", idProduct);
+        command.Parameters.AddWithValue("@IdOrder", idOrder);
+        command.Parameters.AddWithValue("@Amount", amount);
+        command.Parameters.AddWithValue("@Price", price);
+        command.Parameters.AddWithValue("@CreatedAt", createdAt);
+        return Convert.ToInt32(command.ExecuteScalar());
     }
     
     public bool WarehouseExists(int id)
@@ -41,6 +44,19 @@ public class WarehouseRepository : IWarehouseRepository
         using var command = new SqlCommand("SELECT COUNT(*) FROM Product_Warehouse WHERE IdOrder = @IdOrder", connection);
         command.Parameters.AddWithValue("@IdOrder", orderId);
         return (int)command.ExecuteScalar() > 0;
+    }
+    
+    public int AddProductWarehouseSP(int idProduct, int idWarehouse, int amount, DateTime createdAt)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        connection.Open();
+        using var command = new SqlCommand("AddProductToWarehouse", connection);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@IdProduct", idProduct);
+        command.Parameters.AddWithValue("@IdWarehouse", idWarehouse);
+        command.Parameters.AddWithValue("@Amount", amount);
+        command.Parameters.AddWithValue("@CreatedAt", createdAt);
+        return Convert.ToInt32(command.ExecuteScalar());
     }
     
 }

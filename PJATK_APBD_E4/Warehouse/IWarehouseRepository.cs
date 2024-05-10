@@ -2,7 +2,8 @@
 
 public interface IWarehouseRepository
 {
-    void AddProductWarehouse(ProductWarehouse productWarehouse);
+    int AddProductWarehouse(int idWarehouse, int idProduct, int idOrder, int amount, double price, DateTime createdAt);
     bool WarehouseExists(int id);
     bool OrderExists(int orderId);
+    int AddProductWarehouseSP(int idProduct, int idWarehouse, int amount, DateTime createdAt);
 }

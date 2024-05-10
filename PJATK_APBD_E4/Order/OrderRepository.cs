@@ -37,7 +37,7 @@ public class OrderRepository : IOrderRepository
     {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         connection.Open();
-        using var command = new SqlCommand("UPDATE [Order] SET Fullfilled = GETDATE() WHERE IdOrder = @IdOrder", connection);
+        using var command = new SqlCommand("UPDATE [Order] SET FulfilledAt = GETDATE() WHERE IdOrder = @IdOrder", connection);
         command.Parameters.AddWithValue("@IdOrder", orderId);
         command.ExecuteNonQuery();
     }

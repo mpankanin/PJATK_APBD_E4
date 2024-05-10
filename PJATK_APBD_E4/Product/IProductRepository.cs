@@ -3,4 +3,5 @@
 public interface IProductRepository
 {
     bool ProductExists(int id);
+    double GetProductPrice(int id);
 }

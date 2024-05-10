@@ -2,5 +2,6 @@
 
 public interface IWarehouseService
 {
-    void AddProductWarehouse(ProductWarehouse productWarehouse);
+    int AddProductWarehouse(ProductWarehouse productWarehouse);
+    int AddProductWarehouseSP(ProductWarehouse productWarehouse);
 }

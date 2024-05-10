@@ -15,9 +15,17 @@ public class ProductRepository : IProductRepository
     {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         connection.Open();
-        using var command = new SqlCommand("SELECT COUNT(*) FROM Product WHERE Id = @Id", connection);
+        using var command = new SqlCommand("SELECT COUNT(*) FROM Product WHERE IdProduct = @Id", connection);
         command.Parameters.AddWithValue("@Id", id);
         return (int)command.ExecuteScalar() > 0;
     }
     
+    public double GetProductPrice(int id)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        connection.Open();
+        using var command = new SqlCommand("SELECT Price FROM Product WHERE IdProduct = @Id", connection);
+        command.Parameters.AddWithValue("@Id", id);
+        return (double)command.ExecuteScalar();
+    }
 } 
